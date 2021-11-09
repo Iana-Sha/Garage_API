@@ -1,0 +1,28 @@
+server.port: 7003
+server:
+  error:
+    include-message: always
+
+spring.jpa.hibernate.ddl-auto: update
+
+spring.datasource:
+  url: jdbc:mysql://localhost/car-db
+  username: user
+  password: pwd
+
+spring.datasource.hikari.initializationFailTimeout: 60000
+
+logging:
+  level:
+    root: INFO
+    com.shapovalova: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descripter.sql.BasicBinder: TRACE
+
+---
+spring.profiles: docker
+
+spring.datasource:
+  url: jdbc:mysql://mysql/car-db
+
+server.port: 8080

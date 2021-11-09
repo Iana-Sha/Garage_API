@@ -1,0 +1,34 @@
+server.port: 7000
+server:
+  error:
+    include-message: always
+
+logging:
+  level:
+    root: INFO
+    com.shapovalova: DEBUG
+app:
+  user-service:
+    host: localhost
+    port: 7001
+  appointment-service:
+    host: localhost
+    port: 7002
+  car-service:
+    host: localhost
+    port: 7003
+
+---
+spring.profiles: docker
+server.port: 8080
+
+app:
+  user-service:
+    host: user
+    port: 8080
+  appointment-service:
+    host: appointment
+    port: 8080
+  car-service:
+    host: car
+    port: 8080

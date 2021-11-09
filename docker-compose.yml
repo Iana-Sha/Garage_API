@@ -1,0 +1,69 @@
+services:
+  user:
+    build: microservices/user-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mongodb
+
+  appointment:
+    build: microservices/appointment-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      mysql2:
+        condition: service_healthy
+
+  car:
+    build: microservices/car-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  user-composite:
+    build: microservices/user-composite-service
+    mem_limit: 350m
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  mongodb:
+    image: mongo:3.6.9
+    mem_limit: 350m
+    ports:
+      - "27017:27017"
+    command: mongod --smallfiles
+
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=car-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uuser", "-ppwd", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mysql2:
+    image: mysql:5.7
+    mem_limit: 350m
+    ports:
+      - "3307:3307"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=appointment-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-uuser", "-ppwd", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
